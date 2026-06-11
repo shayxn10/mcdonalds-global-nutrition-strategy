@@ -2,7 +2,7 @@
 ### India vs USA — A Cross-Market Data & Strategy Deep Dive
 
 ---
-
+👉 View the live McDonald’s Global Nutrition Dashboard: https://mcdonalds-menu-america-vs-india.lovable.app
 ## 🧠 Project Overview
 
 This project analyzes McDonald’s menu architecture across **India and the United States** using a combination of **SQL exploration, Python analysis, and cross-market comparison modeling**.
