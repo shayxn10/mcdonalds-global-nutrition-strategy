@@ -109,6 +109,7 @@ Rather than a simple nutritional breakdown, this project frames McDonald’s as 
 > “QSR + Café hybrid model”
 
 - Strong presence in both India and USA menus
+<img width="959" height="446" alt="image" src="https://github.com/user-attachments/assets/2307e151-77b4-4a90-bd63-7bfcbf2e86b0" />
 
 ---
 
