@@ -1,0 +1,274 @@
+🍔 McDonald’s India vs USA — SQL Analysis Log
+
+This document contains the key SQL queries used to explore menu structure, nutrition patterns, and health indicators across McDonald’s India and USA datasets.
+
+1. Menu Structure Overview
+📊 What categories exist and how big are they?
+SELECT
+    menu,
+    COUNT(*) AS item_count
+FROM mcd_india
+GROUP BY menu
+ORDER BY item_count DESC;
+
+Purpose:
+Understand how the Indian menu is distributed across categories like breakfast, regular, gourmet, etc.
+
+2. Calorie Extremes (India)
+🔥 Which items are the highest in calories?
+SELECT
+    item,
+    menu,
+    calories
+FROM mcd_india
+ORDER BY calories DESC
+LIMIT 10;
+
+Purpose:
+Identify extreme high-calorie items and potential nutritional outliers.
+
+3. Average Calories by Category
+📦 Which menu groups are most calorie-heavy?
+SELECT
+    menu,
+    ROUND(AVG(calories),2) AS avg_calories
+FROM mcd_india
+GROUP BY menu
+ORDER BY avg_calories DESC;
+
+Purpose:
+Compare energy density across menu categories.
+
+4. Sugar Hotspots (India)
+🍭 Where is sugar concentrated?
+SELECT
+    item,
+    menu,
+    sugar
+FROM mcd_india
+ORDER BY sugar DESC
+LIMIT 10;
+
+Purpose:
+Spot sugary items driving health risk (mostly beverages/desserts).
+
+5. Average Sugar by Category
+SELECT
+    menu,
+    ROUND(AVG(sugar),2) AS avg_sugar
+FROM mcd_india
+GROUP BY menu
+ORDER BY avg_sugar DESC;
+
+Purpose:
+See which categories are consistently sugar-heavy.
+
+6. Sodium Extremes
+🧂 Highest sodium items in the menu
+SELECT
+    item,
+    menu,
+    sodium
+FROM mcd_india
+ORDER BY sodium DESC
+LIMIT 10;
+
+Purpose:
+Identify salt-heavy items contributing to cardiovascular risk.
+
+7. Protein Leaders
+💪 Which items give the most protein?
+SELECT
+    item,
+    menu,
+    protein
+FROM mcd_india
+ORDER BY protein DESC
+LIMIT 10;
+
+Purpose:
+Highlight high-protein menu options.
+
+8. Protein Efficiency
+⚖️ Protein per calorie efficiency
+SELECT
+    item,
+    menu,
+    ROUND(protein/calories * 100,2) AS protein_per_100_calories
+FROM mcd_india
+WHERE calories > 0
+ORDER BY protein_per_100_calories DESC;
+
+Purpose:
+Find “lean protein” items that give more nutrition per calorie.
+
+9. Custom Health Score (India)
+🧪 Composite nutritional risk metric
+SELECT
+    item,
+    menu,
+    ROUND(
+        (protein * 2)
+        - (sugar)
+        - (satfat * 2),
+    2) AS health_score
+FROM mcd_india
+ORDER BY health_score DESC;
+
+Purpose:
+Create a simple scoring model balancing protein vs sugar and saturated fat.
+
+10. Veg vs Non-Veg Split (India)
+🌱🍗 Macro differences by food type
+SELECT
+    CASE
+        WHEN item LIKE '%Chicken%' THEN 'Non-Veg'
+        WHEN item LIKE '%Fish%' THEN 'Non-Veg'
+        WHEN item LIKE '%Egg%' THEN 'Non-Veg'
+        WHEN item LIKE '%Sausage%' THEN 'Non-Veg'
+        WHEN item LIKE '%McNuggets%' THEN 'Non-Veg'
+        WHEN item LIKE '%Strips%' THEN 'Non-Veg'
+        ELSE 'Veg'
+    END AS food_type,
+
+    ROUND(AVG(calories),2) AS avg_calories
+FROM mcd_india
+GROUP BY food_type;
+
+Purpose:
+Compare nutritional profiles between veg and non-veg items.
+
+11. Veg vs Non-Veg Full Nutrition Profile
+SELECT
+    CASE
+        WHEN item LIKE '%Chicken%' THEN 'Non-Veg'
+        WHEN item LIKE '%Fish%' THEN 'Non-Veg'
+        WHEN item LIKE '%Egg%' THEN 'Non-Veg'
+        WHEN item LIKE '%Sausage%' THEN 'Non-Veg'
+        WHEN item LIKE '%McNuggets%' THEN 'Non-Veg'
+        WHEN item LIKE '%Strips%' THEN 'Non-Veg'
+        ELSE 'Veg'
+    END AS food_type,
+
+    COUNT(*) AS items,
+    ROUND(AVG(calories),2) AS avg_calories,
+    ROUND(AVG(protein),2) AS avg_protein,
+    ROUND(AVG(sugar),2) AS avg_sugar,
+    ROUND(AVG(sodium),2) AS avg_sodium
+FROM mcd_india
+GROUP BY food_type;
+
+Purpose:
+Full macro comparison of veg vs non-veg categories.
+
+12. Veg Items Only (Calorie Extremes)
+SELECT
+    item,
+    calories
+FROM mcd_india
+WHERE item NOT LIKE '%Chicken%'
+AND item NOT LIKE '%Fish%'
+AND item NOT LIKE '%Egg%'
+AND item NOT LIKE '%Sausage%'
+AND item NOT LIKE '%McNuggets%'
+AND item NOT LIKE '%Strips%'
+ORDER BY calories DESC
+LIMIT 10;
+
+Purpose:
+Check whether “veg” actually means lower calorie or not.
+
+13. Non-Veg Heavy Items
+SELECT
+    item,
+    calories
+FROM mcd_india
+WHERE
+    item LIKE '%Chicken%'
+    OR item LIKE '%Fish%'
+    OR item LIKE '%Egg%'
+    OR item LIKE '%Sausage%'
+    OR item LIKE '%McNuggets%'
+    OR item LIKE '%Strips%'
+ORDER BY calories DESC
+LIMIT 10;
+
+Purpose:
+Identify calorie-heavy protein-based items.
+
+14. USA Category Overview
+SELECT
+    Category,
+    COUNT(*) AS item_count
+FROM us_menu
+GROUP BY Category
+ORDER BY item_count DESC;
+
+Purpose:
+Understand structure of USA menu categories.
+
+15. USA Nutrition by Category
+SELECT
+    Category,
+    ROUND(AVG(Calories),2) AS avg_calories,
+    ROUND(AVG(Protein),2) AS avg_protein,
+    ROUND(AVG(Sugars),2) AS avg_sugar,
+    ROUND(AVG(Sodium),2) AS avg_sodium
+FROM us_menu
+GROUP BY Category
+ORDER BY avg_calories DESC;
+
+Purpose:
+Compare nutrition intensity across US categories.
+
+16. Sugar Extremes (USA)
+SELECT
+    Item,
+    Category,
+    Sugars
+FROM us_menu
+ORDER BY Sugars DESC
+LIMIT 10;
+
+Purpose:
+Find highest sugar items (mostly drinks/desserts).
+
+17. Fries Analysis (Example Slice)
+SELECT item, calories, sodium 
+FROM us_menu
+WHERE item LIKE '%fries%';
+
+Purpose:
+Isolate fries for cross-country comparison.
+
+18. USA Health Score Model
+SELECT
+    Item,
+    Category,
+    (
+        Protein*2 
+        - Sugars 
+        - Sodium*0.001 
+        - "Saturated Fat"*2 
+        - "Trans Fat"*5
+    ) AS health_score
+FROM us_menu
+ORDER BY health_score ASC
+LIMIT 10;
+
+Purpose:
+Rank worst nutritional items in US menu.
+
+19. Protein Efficiency (USA)
+SELECT
+    Item,
+    Category,
+    Protein,
+    Calories,
+    (Protein * 1.0 / Calories) AS protein_efficiency
+FROM us_menu
+ORDER BY protein_efficiency DESC
+LIMIT 10;
+
+Purpose:
+Find best protein-to-calorie items.
